@@ -1,3 +1,8 @@
+
+import 'dart:typed_data';
+
+import 'package:sms_advanced/sms_advanced.dart';
+
 import './user_model.dart';
 
 class Message {
@@ -7,18 +12,28 @@ class Message {
   final int unreadCount;
   final bool isRead;
   final String text;
+  List<SmsMessage> messages;
+  final Uint8List? thumbnail;
 
   Message({
+    this.thumbnail,
     required this.sender,
     required this.time,
     this.unreadCount=0,
     required this.text,
     this.isRead=false,
+    required this.messages,
   }){
     this.avatar = sender.avatar;
   }
+
+  @override
+  String toString() {
+    return 'Message{sender: $sender, avatar: $avatar, time: $time, unreadCount: $unreadCount, isRead: $isRead, text: $text, messages: $messages}';
+  }
 }
 
+/*
 final List<Message> recentChats = [
   Message(
     sender: addison,
@@ -124,3 +139,4 @@ final List<Message> messages = [
     text: "I was expecting you in my office 20 minutes ago.",
   ),
 ];
+*/

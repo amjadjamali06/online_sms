@@ -1,3 +1,8 @@
+
+import 'package:online_sms/models/message_model.dart';
+import 'package:online_sms/models/user_model.dart';
+import 'package:sms_advanced/sms_advanced.dart';
+
 import 'package:flutter/services.dart';
 import 'package:mobile_number/mobile_number.dart';
 import 'package:sim_data/sim_data.dart' as sim;
@@ -15,11 +20,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController tabController;
   int currentTabIndex = 0;
+  final SmsQuery query = SmsQuery();
+  //List<SmsThread> threads = [];
+  List<Message> listOfMessages=[];
 
   void onTabChange() {
     setState(() {
       currentTabIndex = tabController.index;
-      print(currentTabIndex);
     });
   }
 
@@ -30,7 +37,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     tabController.addListener(() {
       onTabChange();
     });
+    getAllSMS();
     super.initState();
+  }
+  Future getAllSMS() async{
+    await query.getAllThreads.then((threads) {
+      setState(() {
+        for(int i=0;i<threads.length;i++){
+          listOfMessages.add(
+              Message(
+              sender: User(
+                  id: i+1,
+                  name: threads[i].contact!.fullName==null?threads[i].contact!.address!:threads[i].contact!.fullName!,
+                  avatar: ''),
+              time: threads[i].messages.last.date!.toString(), text: threads[i].messages.first.body!,isRead: threads[i].messages.last.isRead!,
+              messages: threads[i].messages,
+                  thumbnail: threads[i].contact == null ? null : threads[i].contact!.thumbnail == null ? null : threads[i].contact!.thumbnail!.bytes!
+          )
+          );
+
+        }
+
+
+      });
+    });
   }
 
   Future<void> initMobileNumberState() async {
@@ -133,9 +163,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: TabBarView(
                 controller: tabController,
                 children: const [
-                  ChatPage(),
-                  Center(child: Text('Status')),
-                  Center(child: Text('Call')),
+                  listOfMessages.isEmpty?const Center(child: CircularProgressIndicator()):chatPage(listOfMessages: listOfMessages,),
+                  const Center(child: Text('Status')),
+                  const Center(child: Text('Call')),
                 ],
               ),
             ),

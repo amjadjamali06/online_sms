@@ -5,96 +5,101 @@ import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
 
-class AllChats extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.only(top: 10),
-          child: Row(
-            children: [
-              Text(
-                'All Chats',
-                style: MyTheme.heading2,
-              ),
-            ],
-          ),
+
+Widget allChat({required List<Message> listOfMessages}){
+  return Column(
+    children: [
+      Container(
+        padding: const EdgeInsets.only(top: 10),
+        child: Row(
+          children: [
+            Text(
+              'All Chats',
+              style: MyTheme.heading2,
+            ),
+          ],
         ),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: ScrollPhysics(),
-            itemCount: allChats.length,
-            itemBuilder: (context, int index) {
-              final allChat = allChats[index];
-              return Container(
-                  margin: const EdgeInsets.only(top: 20),
+      ),
+      ListView.builder(
+          shrinkWrap: true,
+          physics: const ScrollPhysics(),
+          itemCount: listOfMessages.length,
+          itemBuilder: (context, int index) {
+            final allChat = listOfMessages[index];
+            return Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) {
+                          return ChatRoom(user: listOfMessages[index].sender,listOfMessage:listOfMessages[index].messages);
+                        }));
+                  },
                   child: Row(
                     children: [
-                      CircleAvatar(
+                      listOfMessages[index].thumbnail==null ?
+                      const CircleAvatar(
                         radius: 28,
-                        backgroundImage: AssetImage(allChat.avatar),
-                      ),
-                      SizedBox(
+                        backgroundImage: AssetImage('assets/images/Addison.jpg'),
+                      ):
+                      CircleAvatar(
+                          radius: 28,
+                          backgroundImage: MemoryImage(listOfMessages[index].thumbnail!)),
+                      const SizedBox(
                         width: 20,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              CupertinoPageRoute(builder: (context) {
-                            return ChatRoom(user: allChat.sender);
-                          }));
-                        },
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              allChat.sender.name,
+                              listOfMessages[index].sender.name,
                               style: MyTheme.heading2.copyWith(
                                 fontSize: 16,
                               ),
                             ),
                             Text(
-                              allChat.text,
+                              listOfMessages[index].text,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                               style: MyTheme.bodyText1,
                             ),
                           ],
                         ),
                       ),
-                      Spacer(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          allChat.unreadCount == 0
+                          listOfMessages[index].unreadCount == 0
                               ? Icon(
-                                  Icons.done_all,
-                                  color: MyTheme.bodyTextTime.color,
-                                )
+                            Icons.done_all,
+                            color: MyTheme.bodyTextTime.color,
+                          )
                               : CircleAvatar(
-                                  radius: 8,
-                                  backgroundColor: MyTheme.kUnreadChatBG,
-                                  child: Text(
-                                    allChat.unreadCount.toString(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                          SizedBox(
+                            radius: 8,
+                            backgroundColor: MyTheme.kUnreadChatBG,
+                            child: Text(
+                              listOfMessages[index].unreadCount.toString(),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(
                             height: 10,
                           ),
                           Text(
-                            allChat.time,
+                            listOfMessages[index].time,
                             style: MyTheme.bodyTextTime,
                           )
                         ],
                       ),
                     ],
-                  ));
-            })
-      ],
-    );
-  }
+                  ),
+                ));
+          })
+    ],
+  );
 }

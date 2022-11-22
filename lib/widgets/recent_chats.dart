@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import '../models/message_model.dart';
-import '../screens/screen.dart';
 
 import '../app_theme.dart';
 
@@ -30,7 +28,7 @@ class RecentChats extends StatelessWidget {
             ],
           ),
         ),
-        ListView.builder(
+       /* ListView.builder(
             shrinkWrap: true,
             physics: ScrollPhysics(),
             itemCount: recentChats.length,
@@ -99,7 +97,7 @@ class RecentChats extends StatelessWidget {
                       ),
                     ],
                   ));
-            })
+            })*/
       ],
     );
   }

@@ -1,3 +1,6 @@
+
+import 'package:sms_advanced/sms_advanced.dart';
+
 import '../models/message_model.dart';
 import '../models/user_model.dart';
 import '../app_theme.dart';
@@ -6,19 +9,21 @@ import 'package:flutter/material.dart';
 class Conversation extends StatelessWidget {
   const Conversation({
     Key? key,
-    required this.user,
+    required this.user, required this.listOfMessage,
   }) : super(key: key);
 
   final User user;
+  final List<SmsMessage> listOfMessage;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         reverse: true,
-        itemCount: messages.length,
+        itemCount: listOfMessage.length,
         itemBuilder: (context, int index) {
-          final message = messages[index];
-          bool isMe = message.sender.id == currentUser.id;
+          final message = listOfMessage[index];
+          //bool isMe = user.id == currentUser.id;
+          bool isMe = message.kind==SmsMessageKind.Sent;
           return Container(
             margin: EdgeInsets.only(top: 10),
             child: Column(
@@ -31,7 +36,7 @@ class Conversation extends StatelessWidget {
                     if (!isMe)
                       CircleAvatar(
                         radius: 15,
-                        backgroundImage: AssetImage(user.avatar),
+                        backgroundImage: AssetImage('assets/images/Addison.jpg'),
                       ),
                     SizedBox(
                       width: 10,
@@ -49,7 +54,7 @@ class Conversation extends StatelessWidget {
                             bottomRight: Radius.circular(isMe ? 0 : 12),
                           )),
                       child: Text(
-                        messages[index].text,
+                        message.body??'',
                         style: MyTheme.bodyTextMessage.copyWith(
                             color: isMe ? Colors.white : Colors.grey[800]),
                       ),
@@ -75,7 +80,7 @@ class Conversation extends StatelessWidget {
                         width: 8,
                       ),
                       Text(
-                        message.time,
+                        message.date.toString()??'',
                         style: MyTheme.bodyTextTime,
                       )
                     ],

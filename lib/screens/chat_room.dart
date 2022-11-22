@@ -1,14 +1,16 @@
+import 'package:sms_advanced/sms_advanced.dart';
 import '../app_theme.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../widgets/widgets.dart';
 
 class ChatRoom extends StatefulWidget {
-  const ChatRoom({Key? key, required this.user}) : super(key: key);
+  const ChatRoom({Key? key, required this.user, required this.listOfMessage}) : super(key: key);
 
   @override
   _ChatRoomState createState() => _ChatRoomState();
   final User user;
+  final List<SmsMessage> listOfMessage;
 }
 
 class _ChatRoomState extends State<ChatRoom> {
@@ -23,7 +25,7 @@ class _ChatRoomState extends State<ChatRoom> {
             CircleAvatar(
               radius: 30,
               backgroundImage: AssetImage(
-                widget.user.avatar,
+                'assets/images/Addison.jpg',
               ),
             ),
             const SizedBox(
@@ -82,7 +84,7 @@ class _ChatRoomState extends State<ChatRoom> {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  child: Conversation(user: widget.user),
+                  child: Conversation(user: widget.user, listOfMessage: widget.listOfMessage),
                 ),
               ),
             ),
