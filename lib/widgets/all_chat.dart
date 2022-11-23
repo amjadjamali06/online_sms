@@ -40,7 +40,7 @@ Widget allChat({required List<Message> listOfMessages}){
                       listOfMessages[index].thumbnail==null ?
                       const CircleAvatar(
                         radius: 28,
-                        backgroundImage: AssetImage('assets/images/Addison.jpg'),
+                        backgroundImage: AssetImage('assets/images/user_icon.png'),
                       ):
                       CircleAvatar(
                           radius: 28,

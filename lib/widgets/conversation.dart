@@ -34,15 +34,15 @@ class Conversation extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     if (!isMe)
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 15,
-                        backgroundImage: AssetImage('assets/images/Addison.jpg'),
+                        backgroundImage: AssetImage('assets/images/user_icon.png'),
                       ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.6),
                       decoration: BoxDecoration(

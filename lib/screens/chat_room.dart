@@ -22,10 +22,10 @@ class _ChatRoomState extends State<ChatRoom> {
         centerTitle: false,
         title: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 30,
               backgroundImage: AssetImage(
-                'assets/images/Addison.jpg',
+                'assets/images/user_icon.png',
               ),
             ),
             const SizedBox(
