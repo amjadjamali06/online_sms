@@ -21,7 +21,7 @@ class MyTheme {
 
   static final TextStyle chatSenderName = TextStyle(
     color: Colors.white,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: FontWeight.bold,
     letterSpacing: 1.5,
   );

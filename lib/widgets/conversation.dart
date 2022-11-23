@@ -28,7 +28,7 @@ class _Conversation extends State<Conversation>{
           //bool isMe = user.id == currentUser.id;
           bool isMe = message.kind==SmsMessageKind.Sent;
           return Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10),
             child: Column(
               children: [
                 Row(
@@ -51,8 +51,8 @@ class _Conversation extends State<Conversation>{
                       decoration: BoxDecoration(
                           color: isMe ? MyTheme.kAccentColor : Colors.grey[200],
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
+                            topLeft: const Radius.circular(16),
+                            topRight: const Radius.circular(16),
                             bottomLeft: Radius.circular(isMe ? 12 : 0),
                             bottomRight: Radius.circular(isMe ? 0 : 12),
                           )),
@@ -71,7 +71,7 @@ class _Conversation extends State<Conversation>{
                     isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                     children: [
                       if (!isMe)
-                        SizedBox(
+                        const SizedBox(
                           width: 40,
                         ),
                       Icon(
@@ -79,11 +79,11 @@ class _Conversation extends State<Conversation>{
                         size: 20,
                         color: MyTheme.bodyTextTime.color,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(
-                        message.date.toString()??'',
+                        message.date.toString(),
                         style: MyTheme.bodyTextTime,
                       )
                     ],

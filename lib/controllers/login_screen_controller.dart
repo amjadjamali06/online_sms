@@ -49,6 +49,8 @@ class LoginScreenController extends GetxController {
   //Get values from shared preferences
   void getStoredMobileNumber()async{
     String mobile = await UserSession().getMobileNumber();
+    if(mobile.isNotEmpty)
+      Get.off(HomePage());
   }
 
   @override
@@ -73,34 +75,33 @@ class LoginScreenController extends GetxController {
 
 
 
-  Future<void> onSubmitPressed({bool requireSmsPermission = true}) async {
+  Future<void> onSubmitPressed() async {
     if (checkMobileNoValidity()) {
-      if (!(await PermissionUtils().hasSmsPermission()) &&
-          requireSmsPermission) {
+      if (!(await PermissionUtils().hasSmsPermission())) {
         PermissionUtils().requestSmsPermission(onPermissionResult: (isGranted) {
-          onSubmitPressed(requireSmsPermission: false);
+          onSubmitPressed();
         });
         return;
       }
 
-      _progressDialog.showDialog(title: 'Logging User...');
+      _progressDialog.showDialog(title: 'Verifying Number...');
 
-      bool checkInternetAvailability = await CommonCode().checkInternetAccess();
-      if (checkInternetAvailability) {
+      // bool checkInternetAvailability = await CommonCode().checkInternetAccess();
+      if (true) {
         //Call Login Service
-        ResponseModel response = await UserService().registrationSendOtpService(
-            phoneNumber: mobileNoTEController.value.text);
-        _progressDialog.dismissDialog();
+        ResponseModel response = await UserService().sendOTP(phoneNumber: mobileNoTEController.value.text.trim());
 
-        if (response.data != null && response.statusCode == 200 &&
-            response.data is int) {
+
+        if (response.data != null && response.statusCode == 200 && response.data is int) {
           sentOTP = "${response.data}";
+          // _progressDialog.showDialog(title: "Fetching OTP");
           CommonCode().autoPopulateOTP(mobileNoTEController).then((receivedOTP) {
             if (receivedOTP.isNotEmpty) {
               onVerifyOtpBtnPress(receivedOTP);
             }
           });
         } else {
+          _progressDialog.dismissDialog();
           CustomDialogs().showDialog(
             "Alert",
             "${response.data}",
@@ -110,12 +111,18 @@ class LoginScreenController extends GetxController {
         }
       }
     }else{
+      _progressDialog.dismissDialog();
+
       Get.to(HomePage());
     }
   }
 
-  void onVerifyOtpBtnPress(String receivedOTP) {
-    if(receivedOTP == sentOTP){}
+  Future<void> onVerifyOtpBtnPress(String receivedOTP) async {
+    if(receivedOTP == sentOTP){
+      await UserSession().saveMobileNumber(mobile: mobileNoTEController.text.trim());
+      Get.to(HomePage());
+    }
+    _progressDialog.dismissDialog();
   }
 
 

@@ -102,9 +102,9 @@ class CustomDialogs{
       title: title,
       dismissOnTouchOutside: false,
       desc: description,
-      customHeader: Container(
-        margin: const EdgeInsets.all(6),
-        child: Image.asset("assets/images/app_logo.png"),),
+      // customHeader: Container(
+      //   margin: const EdgeInsets.all(6),
+      //   child: Image.asset("assets/images/app_logo.png"),),
       btnOkOnPress: () {
         if(onOkBtnPressed != null ){
           onOkBtnPressed();

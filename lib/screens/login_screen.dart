@@ -172,9 +172,7 @@ class LoginScreen extends GetView<LoginScreenController> {
       currentNode: controller.mobileNoFocusNode,
       inputAction: TextInputAction.next,
       hint: "Mobile Number",
-      icon: const ImageIcon(
-        AssetImage('assets/images/user_icon.png'),
-      ),
+      icon: const Icon(Icons.sim_card, color: Colors.white54,),
       onChanged: (value) {
         controller.checkMobileNoValidity();
       },

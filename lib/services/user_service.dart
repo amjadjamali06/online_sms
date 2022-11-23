@@ -2,6 +2,7 @@
 
 import 'package:online_sms/models/response_model.dart';
 import 'package:online_sms/services/rest_api_url.dart';
+import 'package:online_sms/utils/user_session.dart';
 
 
 import 'http_client.dart';
@@ -19,16 +20,20 @@ class UserService{
     _httpClient = HTTPClient();
   }
 
-  Future<ResponseModel> registrationSendOtpService({required String phoneNumber}) async {
+  Future<ResponseModel> sendOTP({required String phoneNumber}) async {
     Map<String,String> requestBody = {'phoneNumber':phoneNumber};
 
-    ResponseModel responseModel = await _httpClient.postRequest(url:kGenerateOTPURL,body:requestBody);
+    ResponseModel responseModel = await _httpClient.postMultipartRequest(url:kGenerateOTPURL,body:requestBody);
 
     return responseModel;
   }
 
   Future<String> sendSMSService({required String phoneNumber,required String message}) async {
-    Map<String,String> requestBody = {'phoneNumber':phoneNumber,'messageBody':message};
+    Map<String,String> requestBody = {
+      'phoneNumber':"+923166276765",//phoneNumber,
+      'fromNumber': "+923000838330",//await UserSession().getMobileNumber(),
+      'messageBody':message
+    };
 
     ResponseModel responseModel = await _httpClient.postRequest(url:kSendMessageURL,body:requestBody);
     print('-------------------------->>>>. ${responseModel.toString()}');
