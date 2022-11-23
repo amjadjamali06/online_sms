@@ -29,5 +29,16 @@ class UserService{
     return responseModel.data;
   }
 
+  Future<dynamic> sendSMSService({required String phoneNumber,required String message}) async {
+    Map<String,String> requestBody = {'phoneNumber':phoneNumber,'messageBody':message};
+
+    ResponseModel responseModel = await _httpClient.postRequest(url:kSendMessageURL,body:requestBody);
+    print('-------------------------->>>>. ${responseModel.toString()}');
+    if(responseModel.data!=null && responseModel.statusCode==200 && responseModel.data is int){
+      return 'Message sent successfully';
+    }
+    return responseModel.data;
+  }
+
 
 }

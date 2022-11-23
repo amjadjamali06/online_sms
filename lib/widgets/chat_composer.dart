@@ -1,7 +1,21 @@
+/*
 import 'package:flutter/material.dart';
+import 'package:sms_advanced/sms_advanced.dart';
 import '../app_theme.dart';
 
 Container buildChatComposer() {
+  TextEditingController messageTypeController=TextEditingController();
+  Future<void> onSend(String? addressed) async{
+    try{
+      SmsSender sender = SmsSender();
+      String address = addressed!;
+      await sender.sendSms(new SmsMessage(address, 'Hello flutter world!'));
+      print('=>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$address');
+    }catch (e){
+      print('----------------------------->>$e');
+    }
+
+  }
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 20),
     color: Colors.white,
@@ -27,6 +41,7 @@ Container buildChatComposer() {
                 ),
                 Expanded(
                   child: TextField(
+                    controller: messageTypeController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Type your message ...',
@@ -47,12 +62,19 @@ Container buildChatComposer() {
         ),
         CircleAvatar(
           backgroundColor: MyTheme.kAccentColor,
-          child: Icon(
-            Icons.mic,
-            color: Colors.white,
+          child: GestureDetector(
+            child: Icon(
+              Icons.mic,
+              color: Colors.white,
+            ),
+            onTap: (){
+              print(messageTypeController.text);
+              onSend(addressed)
+            },
           ),
         )
       ],
     ),
   );
 }
+*/

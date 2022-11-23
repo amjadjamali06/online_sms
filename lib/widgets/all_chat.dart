@@ -54,7 +54,7 @@ Widget allChat({required List<Message> listOfMessages}){
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              listOfMessages[index].sender.name,
+                              listOfMessages[index].sender.name!=""?listOfMessages[index].sender.name:listOfMessages[index].sender.phoneNUm,
                               style: MyTheme.heading2.copyWith(
                                 fontSize: 16,
                               ),

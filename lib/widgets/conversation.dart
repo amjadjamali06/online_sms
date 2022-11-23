@@ -6,7 +6,7 @@ import '../models/user_model.dart';
 import '../app_theme.dart';
 import 'package:flutter/material.dart';
 
-class Conversation extends StatelessWidget {
+class Conversation extends StatefulWidget {
   const Conversation({
     Key? key,
     required this.user, required this.listOfMessage,
@@ -14,14 +14,17 @@ class Conversation extends StatelessWidget {
 
   final User user;
   final List<SmsMessage> listOfMessage;
+    _Conversation createState() => _Conversation();
 
+}
+class _Conversation extends State<Conversation>{
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         reverse: true,
-        itemCount: listOfMessage.length,
+        itemCount: widget.listOfMessage.length,
         itemBuilder: (context, int index) {
-          final message = listOfMessage[index];
+          final message = widget.listOfMessage[index];
           //bool isMe = user.id == currentUser.id;
           bool isMe = message.kind==SmsMessageKind.Sent;
           return Container(
@@ -30,7 +33,7 @@ class Conversation extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment:
-                      isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     if (!isMe)
@@ -65,7 +68,7 @@ class Conversation extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 5),
                   child: Row(
                     mainAxisAlignment:
-                        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                     children: [
                       if (!isMe)
                         SizedBox(
@@ -92,3 +95,4 @@ class Conversation extends StatelessWidget {
         });
   }
 }
+
