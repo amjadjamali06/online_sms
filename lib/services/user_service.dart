@@ -19,25 +19,23 @@ class UserService{
     _httpClient = HTTPClient();
   }
 
-  Future<dynamic> registrationSendOtpService({required String phoneNumber}) async {
+  Future<ResponseModel> registrationSendOtpService({required String phoneNumber}) async {
     Map<String,String> requestBody = {'phoneNumber':phoneNumber};
 
     ResponseModel responseModel = await _httpClient.postRequest(url:kGenerateOTPURL,body:requestBody);
-    if(responseModel.data!=null && responseModel.statusCode==200 && responseModel.data is int){
-      return 'Otp sent successfully';
-    }
-    return responseModel.data;
+
+    return responseModel;
   }
 
-  Future<dynamic> sendSMSService({required String phoneNumber,required String message}) async {
+  Future<String> sendSMSService({required String phoneNumber,required String message}) async {
     Map<String,String> requestBody = {'phoneNumber':phoneNumber,'messageBody':message};
 
     ResponseModel responseModel = await _httpClient.postRequest(url:kSendMessageURL,body:requestBody);
     print('-------------------------->>>>. ${responseModel.toString()}');
-    if(responseModel.data!=null && responseModel.statusCode==200 && responseModel.data is int){
+    if(responseModel.data!=null && responseModel.statusCode==200 && responseModel.data is String && responseModel.data == "The Message Has Been Sent Successfully "){
       return 'Message sent successfully';
     }
-    return responseModel.data;
+    return "${responseModel.data}";
   }
 
 

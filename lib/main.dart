@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:online_sms/utils/constant.dart';
+import 'package:online_sms/utils/route_generator.dart';
+import 'package:online_sms/utils/screens_bindings.dart';
 import './app_theme.dart';
 import './screens/screen.dart';
 
@@ -10,7 +14,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Online SMS',
       theme: ThemeData(
@@ -27,7 +31,10 @@ class MyApp extends StatelessWidget {
       //   primarySwatch: Colors.blue,
       //   visualDensity: VisualDensity.adaptivePlatformDensity,
       // ),
-      home: HomePage(),
+      // home: HomePage(),
+      initialBinding: ScreensBindings(),
+      getPages: RouteGenerator.getPages(),
+      initialRoute: kLoginScreenRoute,
     );
   }
 }

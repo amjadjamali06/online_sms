@@ -34,6 +34,8 @@ dependencies:
 
   google_fonts: ^2.3.1
   get: ^4.6.5
+  #Maintain Session Locally
+  shared_preferences: ^2.0.7
 
   #getting sim info
 #  sim_data: ^0.0.2
@@ -46,6 +48,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   sms_advanced: ^1.0.1
   permission_handler: any
+  connectivity: ^3.0.6
+  awesome_dialog: ^2.1.1
+  alt_sms_autofill: ^1.0.0
 
 dev_dependencies:
   flutter_test:
