@@ -2,10 +2,10 @@
 import 'package:online_sms/models/message_model.dart';
 import 'package:online_sms/models/user_model.dart';
 import 'package:sms_advanced/sms_advanced.dart';
-
+/*
 import 'package:flutter/services.dart';
 import 'package:mobile_number/mobile_number.dart';
-import 'package:sim_data/sim_data.dart' as sim;
+import 'package:sim_data/sim_data.dart' as sim;*/
 
 import '../app_theme.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  Future<void> initMobileNumberState() async {
+  /*Future<void> initMobileNumberState() async {
     if (!await MobileNumber.hasPhonePermission) {
       await MobileNumber.requestPhonePermission;
       return;
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (!mounted) return;
 
     // setState(() {});
-  }
+  }*/
 
 
   @override
@@ -106,8 +106,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    initMobileNumberState();
-    try {
+    //initMobileNumberState();
+  /*  try {
       sim.SimDataPlugin.getSimData().then((simData) {
         for (var s in simData.cards) {
           print('------------1> ${s.carrierName}');
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     } on PlatformException catch (e) {
       debugPrint("error! code: ${e.code} - message: ${e.message}");
-    }
+    }*/
 
 
     return Scaffold(
@@ -162,7 +162,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   )),
               child: TabBarView(
                 controller: tabController,
-                children: const [
+                children:[
                   listOfMessages.isEmpty?const Center(child: CircularProgressIndicator()):chatPage(listOfMessages: listOfMessages,),
                   const Center(child: Text('Status')),
                   const Center(child: Text('Call')),
