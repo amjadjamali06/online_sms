@@ -1,6 +1,10 @@
 
+import 'dart:developer';
+
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:online_sms/models/message_model.dart';
 import 'package:online_sms/models/user_model.dart';
+import 'package:online_sms/utils/common_code.dart';
 import 'package:sms_advanced/sms_advanced.dart';
 /*
 import 'package:flutter/services.dart';
@@ -38,8 +42,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       onTabChange();
     });
     getAllSMS();
+    getContacts();
     super.initState();
   }
+
+  Future<void> getContacts() async {
+    if (await FlutterContacts.requestPermission(readonly: true)) {
+      List<Contact>  contacts = await FlutterContacts.getContacts(sorted: false, withProperties: true);
+      if(contacts.isNotEmpty) CommonCode.contacts.clear();
+      for(Contact c in contacts){
+        for(var a in c.phones) {
+          CommonCode.contacts[a.normalizedNumber]=c.displayName;
+        }
+      }
+    }
+    return Future.value();
+  }
+
   Future getAllSMS() async{
     await query.getAllThreads.then((threads) {
       setState(() {

@@ -41,7 +41,10 @@ class ProgressDialog {
       onWillPop: (){
         return Future.value(false);
       },
-      radius: 10
+      radius: 10,
+      cancel: GestureDetector(
+          onTap: ()=>dismissDialog(),
+          child: const Text('CANCEL', style: TextStyle(color: Colors.blue),)),
     );
   }
 
@@ -53,7 +56,7 @@ class ProgressDialog {
   }
 
   Future<void> _autoCloseDialog(){
-    Future.delayed(const Duration(minutes: 3), () => dismissDialog(),);
+    Future.delayed(const Duration(minutes: 1), () => dismissDialog(),);
     return Future.value();
   }
 

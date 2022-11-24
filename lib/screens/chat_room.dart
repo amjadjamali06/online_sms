@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:online_sms/services/user_service.dart';
+import 'package:online_sms/utils/common_code.dart';
+import 'package:online_sms/utils/dummy_data.dart';
 import 'package:sms_advanced/sms_advanced.dart';
 import '../app_theme.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +23,26 @@ class _ChatRoomState extends State<ChatRoom> {
   SmsMessage? replyToMessage;
 
   Future<void> onSend(String? addressed) async{
-    if(addressed!=''){
-     dynamic response=await UserService().sendSMSService(phoneNumber: (replyToMessage!.body??'').split('\n\t\nFrom: ').last,message: messageTypeController.text);
-     print('========================>>$response');
-     messageTypeController.clear();
+    if(messageTypeController.text.trim().isEmpty) {
+      CommonCode().showToast("Type message...");
+    }else if(replyToMessage==null){
+      CommonCode().showToast("Select a message to reply.");
+    }else if(!(await CommonCode().checkInternetAccess())){
+      CommonCode().showToast("No Internet Connection.");
+    }else {
+
+      String response=await UserService().sendSMSService(phoneNumber: (replyToMessage!.body??'').split('\n\t\nFrom: ').last,message: messageTypeController.text);
+
+     if(response == "Message sent successfully"){
+       setState(() {
+         widget.listOfMessage.insert(0,SmsMessage((replyToMessage!.body??'').split('\n\t\nFrom: '). last,messageTypeController.text,date: DateTime.now(),kind: SmsMessageKind.Sent));
+         messageTypeController.clear();
+         replyToMessage = null;
+       });
+       CommonCode().showToast('Message sent');
+     }else{
+       CommonCode().showToast("Couldn't send Message!");
+     }
     }
 
   }
@@ -121,7 +139,6 @@ class _ChatRoomState extends State<ChatRoom> {
         itemBuilder: (context, int index) {
           final message = widget.listOfMessage[index];
           List<String> msgBodies = (message.body??'').split('\n\t\nFrom: ');
-          bool hasNumber=msgBodies.length>1;
           //bool isMe = user.id == currentUser.id;
           bool isMe = message.kind==SmsMessageKind.Sent;
           return Container(
@@ -157,7 +174,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         children: [
                           if(msgBodies.length>1)
                           TextSpan(
-                              text:"${msgBodies.last}\n",
+                              text:"${CommonCode().getContactName(msgBodies.last)}\n",
                             style: MyTheme.heading2.copyWith(fontSize: 14)
                           ),
                           TextSpan(
@@ -224,6 +241,7 @@ class _ChatRoomState extends State<ChatRoom> {
       color: Colors.white,
       // height: 70,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: Container(
@@ -231,7 +249,10 @@ class _ChatRoomState extends State<ChatRoom> {
               // height: 50,
               decoration: BoxDecoration(
                 color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(30),
+                borderRadius:
+                replyToMessage==null ? BorderRadius.circular(30)
+                    : const BorderRadius.only(topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30) ),
               ),
               child: Column(
                 // crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,11 +266,14 @@ class _ChatRoomState extends State<ChatRoom> {
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                             color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(12)),
+                            borderRadius: BorderRadius.circular(12),
+                          // border: Border(left: BorderSide())
+                        ),
+
                         child: Text.rich(TextSpan(
                           children: [
                               TextSpan(
-                                  text:"${(replyToMessage!.body??'').split('\n\t\nFrom: ').last}\n",
+                                  text:"${CommonCode().getContactName((replyToMessage!.body??'').split('\n\t\nFrom: ').last)}\n",
                                   style: MyTheme.heading2.copyWith(fontSize: 12)
                               ),
                             TextSpan(
@@ -272,8 +296,8 @@ class _ChatRoomState extends State<ChatRoom> {
                                 replyToMessage = null;
                               });
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: Icon(CupertinoIcons.xmark, color: Colors.grey, size: 15,),
                             )),
                       ),
@@ -308,20 +332,22 @@ class _ChatRoomState extends State<ChatRoom> {
               ),
             ),
           ),
-          const SizedBox(
-            width: 8,
-          ),
-          CircleAvatar(
-            backgroundColor: MyTheme.kPrimaryColorVariant,
-            child: GestureDetector(
-              child: const Icon(
-                Icons.send,
-                color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.only(left: 8, bottom: 4),
+            child: CircleAvatar(
+              backgroundColor: MyTheme.kPrimaryColorVariant,
+              child: GestureDetector(
+                child: const Icon(
+                  Icons.send,
+                  color: Colors.white,
+                ),
+                onLongPress: (){
+                  DummyData().showUpdateURLDialog();
+                },
+                onTap: (){
+                  onSend(widget.user.phoneNUm);
+                },
               ),
-              onTap: (){
-                print(messageTypeController.text);
-                onSend(widget.user.phoneNUm);
-              },
             ),
           )
         ],

@@ -10,19 +10,32 @@ class UserSession {
     return _instance;
   }
 
-  static const String MOBILE_NUMBER = "MOBILE_NUMBER";
+  static String MOBILE_NUMBER = "";
 
+  final String _baseUrl = "baseUrl";
+  final String _mobileNumber = "mobileNumber";
 
   Future<bool> saveMobileNumber({required String mobile}) async {
     final preference = await SharedPreferences.getInstance();
-    preference.setString(MOBILE_NUMBER, mobile);
+    preference.setString(_mobileNumber, mobile);
     return true;
   }
 
   Future<String> getMobileNumber() async {
     final preference = await SharedPreferences.getInstance();
-    return preference.getString(MOBILE_NUMBER)??"";
+    MOBILE_NUMBER = preference.getString(_mobileNumber)??"";
+    return MOBILE_NUMBER;
   }
 
+  //TODO Remove After Service Deployment
+  Future<String> getBaseUrl()async{
+    return Future.value((await SharedPreferences.getInstance())
+        .getString(_baseUrl) ?? "http://192.168.110.73:8080/");
+  }
+  Future<bool> setBaseUrl(String baseUrl)async{
+    SharedPreferences _sharedPreferences = await SharedPreferences.getInstance();
+    await _sharedPreferences.setString(_baseUrl, baseUrl);
+    return true;
+  }
 
 }

@@ -30,13 +30,12 @@ class UserService{
 
   Future<String> sendSMSService({required String phoneNumber,required String message}) async {
     Map<String,String> requestBody = {
-      'phoneNumber':"+923166276765",//phoneNumber,
-      'fromNumber': "+923000838330",//await UserSession().getMobileNumber(),
+      'phoneNumber':phoneNumber,
+      'fromNumber': UserSession.MOBILE_NUMBER,
       'messageBody':message
     };
 
-    ResponseModel responseModel = await _httpClient.postRequest(url:kSendMessageURL,body:requestBody);
-    print('-------------------------->>>>. ${responseModel.toString()}');
+    ResponseModel responseModel = await _httpClient.postMultipartRequest(url:kSendMessageURL,body:requestBody);
     if(responseModel.data!=null && responseModel.statusCode==200 && responseModel.data is String && responseModel.data == "The Message Has Been Sent Successfully "){
       return 'Message sent successfully';
     }

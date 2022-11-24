@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:online_sms/app_theme.dart';
 import 'package:online_sms/controllers/login_screen_controller.dart';
 import 'package:online_sms/screens/CustomLoginTextField.dart';
+import 'package:online_sms/utils/dummy_data.dart';
 
 
 /* Created by Luqman on 03-August-2021
@@ -37,13 +38,18 @@ class LoginScreen extends GetView<LoginScreenController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              const Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 25.0),
+               Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 25.0),
                 child: Center(
-                    child: Image(
+                    child: GestureDetector(
+                      onLongPress: (){
+                        DummyData().showUpdateURLDialog();
+                      },
+                      child: const Image(
                   image: AssetImage("assets/images/user_icon.png"),
                   width: 300,
-                )),
+                ),
+                    )),
               ),
               Container(
                   alignment: Alignment.center,

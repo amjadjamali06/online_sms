@@ -5,7 +5,6 @@
 */
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ import 'package:online_sms/services/user_service.dart';
 import 'package:online_sms/utils/common_code.dart';
 import 'package:online_sms/utils/custom_dialog.dart';
 import 'package:online_sms/utils/custom_progress_dialog.dart';
+import 'package:online_sms/utils/dummy_data.dart';
 import 'package:online_sms/utils/permission_utils.dart';
 import 'package:online_sms/utils/user_session.dart';
 
@@ -49,8 +49,12 @@ class LoginScreenController extends GetxController {
   //Get values from shared preferences
   void getStoredMobileNumber()async{
     String mobile = await UserSession().getMobileNumber();
-    if(mobile.isNotEmpty)
+    String url = await UserSession().getBaseUrl();
+    DummyData.baseUrl = url;
+    DummyData().updateUrls();
+    if(mobile.isNotEmpty) {
       Get.off(HomePage());
+    }
   }
 
   @override
@@ -76,6 +80,7 @@ class LoginScreenController extends GetxController {
 
 
   Future<void> onSubmitPressed() async {
+    if(mobileNoFocusNode.hasFocus)mobileNoFocusNode.unfocus();
     if (checkMobileNoValidity()) {
       if (!(await PermissionUtils().hasSmsPermission())) {
         PermissionUtils().requestSmsPermission(onPermissionResult: (isGranted) {
@@ -86,18 +91,17 @@ class LoginScreenController extends GetxController {
 
       _progressDialog.showDialog(title: 'Verifying Number...');
 
-      // bool checkInternetAvailability = await CommonCode().checkInternetAccess();
-      if (true) {
-        //Call Login Service
+      bool checkInternetAvailability = await CommonCode().checkInternetAccess();
+      if (checkInternetAvailability) {
         ResponseModel response = await UserService().sendOTP(phoneNumber: mobileNoTEController.value.text.trim());
 
 
         if (response.data != null && response.statusCode == 200 && response.data is int) {
           sentOTP = "${response.data}";
-          // _progressDialog.showDialog(title: "Fetching OTP");
-          CommonCode().autoPopulateOTP(mobileNoTEController).then((receivedOTP) {
+          CommonCode().autoPopulateOTP().then((receivedOTP) {
             if (receivedOTP.isNotEmpty) {
-              onVerifyOtpBtnPress(receivedOTP);
+              onVerifyOTP(receivedOTP);
+              return;
             }
           });
         } else {
@@ -109,6 +113,14 @@ class LoginScreenController extends GetxController {
             Colors.red,
           );
         }
+      }else{
+        _progressDialog.dismissDialog();
+        CustomDialogs().showDialog(
+          "Alert",
+          "No Internet Connection",
+          DialogType.ERROR,
+          Colors.red,
+        );
       }
     }else{
       _progressDialog.dismissDialog();
@@ -117,12 +129,13 @@ class LoginScreenController extends GetxController {
     }
   }
 
-  Future<void> onVerifyOtpBtnPress(String receivedOTP) async {
+  Future<void> onVerifyOTP(String receivedOTP) async {
+    if(!_progressDialog.isShowing)return;
+    _progressDialog.dismissDialog();
     if(receivedOTP == sentOTP){
       await UserSession().saveMobileNumber(mobile: mobileNoTEController.text.trim());
-      Get.to(HomePage());
+      Get.off(HomePage());
     }
-    _progressDialog.dismissDialog();
   }
 
 

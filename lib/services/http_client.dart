@@ -50,36 +50,35 @@ class HTTPClient extends GetConnect{
   }
 
 
-  Future<ResponseModel> postMultipartRequest({required String url, Map<String, String> body=const{}})async{
-    try{
+  Future<ResponseModel> postMultipartRequest({required String url, Map<String, String> body =const{}}) async {
+    try {
 
+        http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(url));
 
-      final uri = Uri.parse(url);
-      var request = http.MultipartRequest('POST', uri);
+        request.fields.addAll(body);
+        http.StreamedResponse streamedResponse=await request.send();
+        http.Response httpResponse=await http.Response.fromStream(streamedResponse);
+        log('════════════════════4url> $url');
+        log('════════════════════4fields> $body');
+        log('════════════════════4Response.body> ${httpResponse.body}');
+        ResponseModel response=ResponseModel.fromJson(jsonDecode(httpResponse.body));
+        return Future.value(response);
 
-      http.Response response = await http.Response.fromStream(await request.send());
-
-      response.statusCode;
-
-        log('════════════════════5body> $body');
-        log('════════════════════5url> $url');
-        log('════════════════════5Response.body> ${response.body}');
-        ResponseModel responseModel =  ResponseModel.named(statusCode: 200, statusDescription: "Success", data: response.body);
-        // if(response.body is List) {
-        //   responseModel = ResponseModel.named(statusCode: 200, statusDescription: "Success");
-        //   responseModel.data = response.body;
-        // }else {
-        //   responseModel = ResponseModel.fromJson(jsonDecode(response.bodyString!));
-        // }
-        return responseModel;
-
-    }
-    on TimeoutException catch (_) {
-      return Future.value(ResponseModel.named(statusCode:408, statusDescription:"Request TimeOut", data:""));
-    } on SocketException catch (_) {
-      return Future.value(ResponseModel.named(statusCode:400, statusDescription:"Bad Request", data:""));
-    }catch(e){
-      return Future.value(ResponseModel.named(statusCode:500, statusDescription:"Server Error", data:"Server Error"));
+    } on TimeoutException {
+      return Future.value(ResponseModel.named(
+          statusCode: 408,
+          statusDescription: "Request TimeOut",
+          data: "Request TimeOut"));
+    } on SocketException {
+      return Future.value(ResponseModel.named(
+          statusCode: 400,
+          statusDescription: "Bad Request",
+          data: "Bad Request"));
+    } catch (e) {
+      return Future.value(ResponseModel.named(
+          statusCode: 500,
+          statusDescription: "Server Error",
+          data: "Server Error"));
     }
   }
 
@@ -104,5 +103,28 @@ class HTTPClient extends GetConnect{
     }
   }
 
+  Future<ResponseModel> getRequestWithOutHeader({required String url}) async {
+    try {
+      http.Response response =
+      await http.get(Uri.parse(url)).timeout(Duration(seconds: _requestTimeOut));
+      ResponseModel responseModel = ResponseModel();
+      if (response.body.length > 4) {
+        responseModel.statusCode = response.statusCode;
+        responseModel.statusDescription = "Success";
+        responseModel.data = response.body;
+      }
+
+      return responseModel;
+    } on TimeoutException {
+      return Future.value(ResponseModel.named(
+          statusCode: 408, statusDescription: "Request TimeOut", data: ""));
+    } on SocketException {
+      return Future.value(ResponseModel.named(
+          statusCode: 400, statusDescription: "Bad Request", data: ""));
+    } catch (_) {
+      return Future.value(ResponseModel.named(
+          statusCode: 500, statusDescription: "Server Error", data: ""));
+    }
+  }
 
 }
