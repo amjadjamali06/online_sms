@@ -5,6 +5,7 @@ import 'package:alt_sms_autofill/alt_sms_autofill.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 import 'package:online_sms/models/response_model.dart';
 import 'package:online_sms/services/http_client.dart';
@@ -72,6 +73,17 @@ class CommonCode {
     print('--------${contacts.length}>   ${contacts[number]}($number)');
 
     return contacts[number]??number;
+  }
+
+  static String getFormattedDate(String date){
+    DateTime? d = DateTime.tryParse(date);
+    if(d!=null){
+      date = DateFormat("dd-MM-yyyy").format(d);
+      if(date == DateFormat("dd-MM-yyyy").format(DateTime.now())){
+        date = DateFormat("hh:mm a").format(d);
+      }
+    }
+    return date;
   }
 
 }

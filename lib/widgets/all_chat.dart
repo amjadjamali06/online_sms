@@ -1,3 +1,5 @@
+import 'package:online_sms/utils/common_code.dart';
+
 import '../models/message_model.dart';
 import '../screens/screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,7 +27,6 @@ Widget allChat({required List<Message> listOfMessages}){
           physics: const ScrollPhysics(),
           itemCount: listOfMessages.length,
           itemBuilder: (context, int index) {
-            final allChat = listOfMessages[index];
             return Container(
                 margin: const EdgeInsets.only(top: 20),
                 child: GestureDetector(
@@ -53,11 +54,22 @@ Widget allChat({required List<Message> listOfMessages}){
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              listOfMessages[index].sender.name!=""?listOfMessages[index].sender.name:listOfMessages[index].sender.phoneNUm,
-                              style: MyTheme.heading2.copyWith(
-                                fontSize: 16,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  listOfMessages[index].sender.name!=""?listOfMessages[index].sender.name:listOfMessages[index].sender.phoneNUm,
+                                  style: MyTheme.heading2.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                Text(
+                                  CommonCode.getFormattedDate(listOfMessages[index].time),
+                                  style: MyTheme.bodyTextTime,
+                                )
+                              ],
                             ),
                             Text(
                               listOfMessages[index].text,
@@ -67,34 +79,6 @@ Widget allChat({required List<Message> listOfMessages}){
                             ),
                           ],
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          listOfMessages[index].unreadCount == 0
-                              ? Icon(
-                            Icons.done_all,
-                            color: MyTheme.bodyTextTime.color,
-                          )
-                              : CircleAvatar(
-                            radius: 8,
-                            backgroundColor: MyTheme.kUnreadChatBG,
-                            child: Text(
-                              listOfMessages[index].unreadCount.toString(),
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            listOfMessages[index].time,
-                            style: MyTheme.bodyTextTime,
-                          )
-                        ],
                       ),
                     ],
                   ),

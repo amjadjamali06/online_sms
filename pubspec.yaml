@@ -54,6 +54,7 @@ dependencies:
   alt_sms_autofill: ^1.0.0
   flutter_contacts: ^1.1.5+1
   fluttertoast: ^8.1.1
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

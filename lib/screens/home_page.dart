@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 phoneNUm: threads[i].contact == null ? '':threads[i].contact!.address==null?'':threads[i].contact!.address!
 
               ),
-              time: threads[i].messages.last.date!.toString(), text: threads[i].messages.first.body!,isRead: threads[i].messages.last.isRead!,
+              time: threads[i].messages.first.date!.toString(), text: threads[i].messages.first.body!,isRead: threads[i].messages.last.isRead!,
               messages: threads[i].messages,
                   thumbnail: threads[i].contact == null ? null : threads[i].contact!.thumbnail == null ? null : threads[i].contact!.thumbnail!.bytes!
           )

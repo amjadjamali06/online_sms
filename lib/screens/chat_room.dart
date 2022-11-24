@@ -223,7 +223,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         width: 8,
                       ),
                       Text(
-                        message.date.toString(),
+                          CommonCode.getFormattedDate(message.date.toString()),
                         style: MyTheme.bodyTextTime,
                       )
                     ],
