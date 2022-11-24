@@ -22,20 +22,24 @@ class _ChatRoomState extends State<ChatRoom> {
   TextEditingController messageTypeController=TextEditingController();
   SmsMessage? replyToMessage;
 
-  Future<void> onSend(String? addressed) async{
+  Future<void> onSend(String addressed) async{
+    if(replyToMessage!=null){
+      addressed = (replyToMessage!.body??'').split('\n\t\nFrom: ').last;
+    }
+
     if(messageTypeController.text.trim().isEmpty) {
       CommonCode().showToast("Type message...");
-    }else if(replyToMessage==null){
-      CommonCode().showToast("Select a message to reply.");
+    }else if(RegExp('[A-Za-z]').hasMatch(addressed) || !addressed.startsWith('+')){
+      CommonCode().showToast("Can't send message to this address.\n($addressed)");
     }else if(!(await CommonCode().checkInternetAccess())){
       CommonCode().showToast("No Internet Connection.");
     }else {
 
-      String response=await UserService().sendSMSService(phoneNumber: (replyToMessage!.body??'').split('\n\t\nFrom: ').last,message: messageTypeController.text);
+      String response=await UserService().sendSMSService(phoneNumber: addressed, message: messageTypeController.text);
 
      if(response == "Message sent successfully"){
        setState(() {
-         widget.listOfMessage.insert(0,SmsMessage((replyToMessage!.body??'').split('\n\t\nFrom: '). last,messageTypeController.text,date: DateTime.now(),kind: SmsMessageKind.Sent));
+         widget.listOfMessage.insert(0,SmsMessage(addressed, messageTypeController.text,date: DateTime.now(),kind: SmsMessageKind.Sent));
          messageTypeController.clear();
          replyToMessage = null;
        });
@@ -46,6 +50,19 @@ class _ChatRoomState extends State<ChatRoom> {
     }
 
   }
+
+  @override
+  void initState() {
+
+    for (var entry in CommonCode.contacts.entries) {
+      if(entry.value == widget.user.name && entry.key.endsWith(widget.user.phoneNUm.substring(widget.user.phoneNUm.indexOf('0')+1))){
+        widget.user.phoneNUm = entry.key;
+      }
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -125,7 +125,7 @@ class LoginScreenController extends GetxController {
     }else{
       _progressDialog.dismissDialog();
 
-      Get.to(HomePage());
+      // Get.to(HomePage());
     }
   }
 
